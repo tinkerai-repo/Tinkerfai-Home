@@ -1,0 +1,10 @@
+.playground-section {
+  background: #e0e0e0;
+  width: 100%;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+  overflow-x: hidden;
+  position: relative;
+  box-sizing: border-box;
+}
