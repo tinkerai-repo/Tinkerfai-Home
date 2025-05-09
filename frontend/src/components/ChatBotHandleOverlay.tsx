@@ -11,7 +11,6 @@ interface ChatBotHandleOverlayProps {
 }
 
 const MAX_HEIGHT = 50;
-const MIN_HEIGHT = 5;
 
 const ChatBotHandleOverlay: React.FC<ChatBotHandleOverlayProps> = ({
   bottom,

@@ -34,7 +34,12 @@ const Header: React.FC = () => {
           aria-label="Profile"
           onClick={() => setMenuOpen((open) => !open)}
         >
-          <svg height="36" width="36" viewBox="0 0 36 36">
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 36 36"
+            style={{ display: "block" }}
+          >
             <circle
               cx="18"
               cy="12"
@@ -66,9 +71,15 @@ const Header: React.FC = () => {
               color: "#222",
             }}
           >
-            <div style={{ padding: "8px 20px", cursor: "pointer" }}>My Profile</div>
-            <div style={{ padding: "8px 20px", cursor: "pointer" }}>My Badges</div>
-            <div style={{ padding: "8px 20px", cursor: "pointer" }}>Explore Community</div>
+            <div style={{ padding: "8px 20px", cursor: "pointer" }}>
+              My Profile
+            </div>
+            <div style={{ padding: "8px 20px", cursor: "pointer" }}>
+              My Badges
+            </div>
+            <div style={{ padding: "8px 20px", cursor: "pointer" }}>
+              Explore Community
+            </div>
           </div>
         )}
       </div>
