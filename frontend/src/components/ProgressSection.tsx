@@ -58,12 +58,6 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
                 alignItems: "center",
                 justifyContent: "center",
                 height: "100%",
-                cursor: unlockedIndex === idx ? "pointer" : "default",
-              }}
-              onClick={() => {
-                if (unlockedIndex === idx) {
-                  setUnlockedIndex(idx + 1);
-                }
               }}
             >
               <div
@@ -72,6 +66,7 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
                   position: "absolute",
                   top: "1.5vh",
                   marginLeft: idx < 3 ? "-2vw" : undefined,
+                  pointerEvents: "none",
                 }}
                 className={
                   unlockedIndex === idx ? "puzzle-lock-hover" : undefined
@@ -83,14 +78,25 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
                   size="3vh"
                 />
               </div>
-              <PuzzlePiece
-                type={piece.type as any}
-                color={piece.color}
-                height={piece.height}
-                className={
-                  unlockedIndex === idx ? "puzzle-piece-hoverable" : ""
-                }
-              />
+              <div
+                onClick={() => {
+                  if (unlockedIndex === idx) {
+                    setUnlockedIndex(idx + 1);
+                  }
+                }}
+                style={{
+                  cursor: unlockedIndex === idx ? "pointer" : "default",
+                }}
+              >
+                <PuzzlePiece
+                  type={piece.type as any}
+                  color={piece.color}
+                  height={piece.height}
+                  className={
+                    unlockedIndex === idx ? "puzzle-piece-hoverable" : ""
+                  }
+                />
+              </div>
             </div>
           ))}
         </div>
