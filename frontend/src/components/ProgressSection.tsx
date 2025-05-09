@@ -49,6 +49,20 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
             position: "relative",
           }}
         >
+          {/* Left separator for unlocked piece (if not first) */}
+          {unlockedIndex > 0 && unlockedIndex < puzzleData.length && (
+            <div
+              className="vertical-dashed-separator"
+              style={{
+                position: "absolute",
+                left: `calc(${
+                  (100 / puzzleData.length) * unlockedIndex
+                }% - 1px)`,
+                top: 0,
+                height: "100%",
+              }}
+            />
+          )}
           {puzzleData.map((piece, idx) => (
             <div
               key={idx}
@@ -58,6 +72,8 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
                 alignItems: "center",
                 justifyContent: "center",
                 height: "100%",
+                position: "relative",
+                flex: 1,
               }}
             >
               <div
@@ -99,6 +115,20 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
               </div>
             </div>
           ))}
+          {/* Right separator for unlocked piece (if not last) */}
+          {unlockedIndex < puzzleData.length - 1 && (
+            <div
+              className="vertical-dashed-separator"
+              style={{
+                position: "absolute",
+                left: `calc(${
+                  (100 / puzzleData.length) * (unlockedIndex + 1)
+                }% - 1px)`,
+                top: 0,
+                height: "100%",
+              }}
+            />
+          )}
         </div>
         <div style={{ width: "15%" }} />
       </div>

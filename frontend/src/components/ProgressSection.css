@@ -70,3 +70,11 @@
   transition: filter 0.2s;
   z-index: 1;
 }
+
+.vertical-dashed-separator {
+  border-left: 2px dashed rgba(255,255,255,0.5);
+  height: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+}
