@@ -40,8 +40,8 @@ const DragHandleOverlay: React.FC<DragHandleOverlayProps> = ({
           }}
           aria-label="Collapse"
           style={{
-            width: 28,
-            height: 28,
+            width: "2.5vh",
+            height: "2.5vh",
             padding: 0,
             background: "none",
             border: "none",
@@ -50,7 +50,7 @@ const DragHandleOverlay: React.FC<DragHandleOverlayProps> = ({
           <img
             src={scrollUp}
             alt="Scroll up"
-            style={{ width: 28, height: 28, display: "block" }}
+            style={{ width: "2.5vh", height: "2.5vh", display: "block" }}
           />
         </button>
       ) : (
@@ -62,8 +62,8 @@ const DragHandleOverlay: React.FC<DragHandleOverlayProps> = ({
           }}
           aria-label="Expand"
           style={{
-            width: 28,
-            height: 28,
+            width: "2.5vh",
+            height: "2.5vh",
             padding: 0,
             background: "none",
             border: "none",
@@ -72,7 +72,7 @@ const DragHandleOverlay: React.FC<DragHandleOverlayProps> = ({
           <img
             src={scrollDown}
             alt="Scroll down"
-            style={{ width: 28, height: 28, display: "block" }}
+            style={{ width: "2.5vh", height: "2.5vh", display: "block" }}
           />
         </button>
       )}
