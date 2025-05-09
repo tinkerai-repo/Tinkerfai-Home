@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "./ChatBotSection.css";
+import scrollDown from "../assets/scroll-down.png";
 
 interface ChatBotHandleOverlayProps {
     bottom: string;
@@ -18,6 +19,7 @@ const ChatBotHandleOverlay: React.FC<ChatBotHandleOverlayProps> = ({
     isMax,
     onCollapse,
 }) => {
+    const [hover, setHover] = useState(false);
     const handle = (
         <div
             style={{
@@ -43,16 +45,27 @@ const ChatBotHandleOverlay: React.FC<ChatBotHandleOverlayProps> = ({
                     padding: 0,
                     background: "none",
                     border: "none",
+                    position: "relative",
                 }}
+                onMouseEnter={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}
             >
-                {/* Simple chatbot SVG icon */}
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="6" width="20" height="12" rx="6" fill="#888" stroke="#222" strokeWidth="2" />
-                    <circle cx="10" cy="12" r="1.5" fill="#fff" />
-                    <circle cx="14" cy="12" r="1.5" fill="#fff" />
-                    <circle cx="18" cy="12" r="1.5" fill="#fff" />
-                    <path d="M10 18L8 22L14 18H18" stroke="#222" strokeWidth="2" strokeLinejoin="round" />
-                </svg>
+                {/* Show scroll-down arrow on hover when expanded */}
+                {isMax && hover ? (
+                    <img
+                        src={scrollDown}
+                        alt="Scroll down"
+                        style={{ width: 28, height: 28, display: "block" }}
+                    />
+                ) : (
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="6" width="20" height="12" rx="6" fill={isMax ? "#4caf50" : "#888"} stroke="#222" strokeWidth="2" />
+                        <circle cx="10" cy="12" r="1.5" fill="#fff" />
+                        <circle cx="14" cy="12" r="1.5" fill="#fff" />
+                        <circle cx="18" cy="12" r="1.5" fill="#fff" />
+                        <path d="M10 18L8 22L14 18H18" stroke="#222" strokeWidth="2" strokeLinejoin="round" />
+                    </svg>
+                )}
             </button>
         </div>
     );
