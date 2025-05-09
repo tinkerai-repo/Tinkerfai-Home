@@ -58,12 +58,17 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
                 alignItems: "center",
                 justifyContent: "center",
                 height: "100%",
+                cursor: unlockedIndex === idx ? "pointer" : "default",
+              }}
+              onClick={() => {
+                if (unlockedIndex === idx) {
+                  setUnlockedIndex(idx + 1);
+                }
               }}
             >
               <div
                 style={{
                   marginBottom: 8,
-                  cursor: unlockedIndex === idx ? "pointer" : "default",
                   position: "absolute",
                   top: "1.5vh",
                   marginLeft: idx < 3 ? "-2vw" : undefined,
@@ -71,11 +76,6 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
                 className={
                   unlockedIndex === idx ? "puzzle-lock-hover" : undefined
                 }
-                onClick={() => {
-                  if (unlockedIndex === idx && idx < puzzleData.length - 1) {
-                    setUnlockedIndex(idx + 1);
-                  }
-                }}
               >
                 <LockIcon
                   locked={unlockedIndex !== idx}

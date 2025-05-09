@@ -66,7 +66,7 @@
 }
 
 .puzzle-piece-hoverable:hover {
-  box-shadow: 0 0 16px 2px #2224;
-  transition: box-shadow 0.2s;
+  filter: drop-shadow(0 0 16px #2224);
+  transition: filter 0.2s;
   z-index: 1;
 }
