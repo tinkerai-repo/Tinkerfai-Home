@@ -10,6 +10,9 @@ import ChatBotHandleOverlay from "./components/ChatBotHandleOverlay";
 function App() {
   const [progressSectionHeight, setProgressSectionHeight] = useState(25);
   const [chatbotSectionHeight, setChatbotSectionHeight] = useState(5);
+  const [selectedTaskIndex, setSelectedTaskIndex] = useState<number | null>(
+    null
+  );
 
   // Ensure only one section can be at max height at a time
   const handleProgressSectionHeight = (percent: number) => {
@@ -33,8 +36,9 @@ function App() {
         <ProgressSection
           heightPercent={progressSectionHeight}
           onHeightChange={handleProgressSectionHeight}
+          onPuzzleClick={setSelectedTaskIndex}
         />
-        <PlaygroundSection />
+        <PlaygroundSection selectedTaskIndex={selectedTaskIndex} />
         <DragHandleOverlay
           top={`calc(8vh + ${progressSectionHeight}vh)`}
           onDrag={handleProgressSectionHeight}

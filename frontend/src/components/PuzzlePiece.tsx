@@ -58,8 +58,11 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
       className={className}
       style={{
         display: "block",
-        margin: "0 auto",
+        margin: 0,
+        padding: 0,
         height: height || defaultHeights[type],
+        width: "100%",
+        boxSizing: "border-box",
       }}
     />
   );

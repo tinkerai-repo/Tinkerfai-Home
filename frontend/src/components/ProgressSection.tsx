@@ -6,6 +6,7 @@ import LockIcon from "./LockIcon";
 interface ProgressSectionProps {
   heightPercent: number;
   onHeightChange: (percent: number) => void;
+  onPuzzleClick?: (taskIndex: number) => void;
   children?: React.ReactNode;
 }
 
@@ -22,6 +23,7 @@ const puzzleData = [
 const ProgressSection: React.FC<ProgressSectionProps> = ({
   heightPercent,
   children,
+  onPuzzleClick,
 }) => {
   const [unlockedIndex, setUnlockedIndex] = useState(0);
 
@@ -98,6 +100,9 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
                 onClick={() => {
                   if (unlockedIndex === idx) {
                     setUnlockedIndex(idx + 1);
+                    if (typeof onPuzzleClick === "function") {
+                      onPuzzleClick(idx);
+                    }
                   }
                 }}
                 style={{
