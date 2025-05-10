@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import "./PlaygroundSection.css";
 import PuzzlePiece from "./PuzzlePiece";
+import SubmitButton from "./SubmitButton";
 
 export type PuzzlePieceType =
   | "subtask-1"
@@ -41,6 +42,9 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
   completedSubtasks,
   children,
 }) => {
+  const [showSubmitButton, setShowSubmitButton] = useState(false);
+  const [isSubtaskSelected, setIsSubtaskSelected] = useState(false);
+
   if (selectedTaskIndex === null) {
     return (
       <div
@@ -55,17 +59,32 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
   const colors = TASK_COLORS[selectedTaskIndex];
 
   const isSubtaskClickable = (index: number) => {
+    if (showSubmitButton) return false;
     return index === currentSubtaskIndex;
   };
 
   const getShiftDirection = () => {
+    if (!isSubtaskSelected) return null;
     if (currentSubtaskIndex === 0 || currentSubtaskIndex === 2) return "right";
     if (currentSubtaskIndex === 1 || currentSubtaskIndex === 3) return "left";
     return null;
   };
 
+  const handleSubtaskClick = (index: number) => {
+    if (isSubtaskClickable(index)) {
+      setIsSubtaskSelected(true);
+      setShowSubmitButton(true);
+    }
+  };
+
+  const handleSubmit = () => {
+    setShowSubmitButton(false);
+    setIsSubtaskSelected(false);
+    onSubtaskClick(currentSubtaskIndex);
+  };
+
   const shiftDirection = getShiftDirection();
-  const shouldShowSeparator = selectedTaskIndex !== null;
+  const shouldShowSeparator = selectedTaskIndex !== null && isSubtaskSelected;
 
   return (
     <div
@@ -96,9 +115,7 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
           }}
         >
           {SUBTASK_TYPES.map((type, i) => {
-            // By default, blocks 1 & 4 (i=0,3) have z-index 2, blocks 2 & 3 (i=1,2) have z-index 1
             let zIndex = i === 0 || i === 3 ? 2 : 1;
-            // When 2 or 3 is clickable, blocks 1 & 4 get z-index 1, blocks 2 & 3 get z-index 2
             if (currentSubtaskIndex === 1 || currentSubtaskIndex === 2) {
               zIndex = i === 1 || i === 2 ? 2 : 1;
             }
@@ -131,20 +148,32 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
                     ? { marginLeft: "-22%", transform: "translateX(-11.5%)" }
                     : {}),
                 }}
-                onClick={() => onSubtaskClick(i)}
+                onClick={() => handleSubtaskClick(i)}
               >
                 <PuzzlePiece
                   type={type}
                   color={colors[i]}
                   height={i === 0 || i === 3 ? "19.35vh" : "15vh"}
                   className={
-                    isSubtaskClickable(i) ? "puzzle-piece-hoverable" : ""
+                    i === currentSubtaskIndex ? "puzzle-piece-hoverable" : ""
                   }
                 />
               </div>
             );
           })}
         </div>
+        {showSubmitButton && (
+          <SubmitButton
+            onClick={handleSubmit}
+            position={
+              currentSubtaskIndex === 0 || currentSubtaskIndex === 2
+                ? "left"
+                : "right"
+            }
+            taskIndex={selectedTaskIndex}
+            subtaskIndex={currentSubtaskIndex}
+          />
+        )}
       </div>
       {children}
     </div>
