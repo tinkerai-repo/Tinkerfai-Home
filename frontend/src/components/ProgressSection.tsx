@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./ProgressSection.css";
 import PuzzlePiece from "./PuzzlePiece";
 import LockIcon from "./LockIcon";
@@ -7,6 +7,9 @@ interface ProgressSectionProps {
   heightPercent: number;
   onHeightChange: (percent: number) => void;
   onPuzzleClick?: (taskIndex: number) => void;
+  selectedTaskIndex: number | null;
+  completedSubtasks: boolean[][];
+  unlockedIndex: number;
   children?: React.ReactNode;
 }
 
@@ -24,8 +27,20 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
   heightPercent,
   children,
   onPuzzleClick,
+  selectedTaskIndex,
+  completedSubtasks,
+  unlockedIndex,
 }) => {
-  const [unlockedIndex, setUnlockedIndex] = useState(0);
+  const isTaskClickable = (index: number) => {
+    if (selectedTaskIndex !== null) return false;
+    return index === unlockedIndex;
+  };
+
+  const isTaskLocked = (index: number) => {
+    if (index < unlockedIndex) return true;
+    if (index === selectedTaskIndex) return false;
+    return index > unlockedIndex;
+  };
 
   return (
     <div className="progress-section" style={{ height: `${heightPercent}vh` }}>
@@ -87,26 +102,25 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
                   pointerEvents: "none",
                 }}
                 className={
-                  unlockedIndex === idx ? "puzzle-lock-hover" : undefined
+                  isTaskClickable(idx) ? "puzzle-lock-hover" : undefined
                 }
               >
                 <LockIcon
-                  locked={unlockedIndex !== idx}
+                  locked={isTaskLocked(idx)}
                   color={piece.color}
                   size="3vh"
                 />
               </div>
               <div
                 onClick={() => {
-                  if (unlockedIndex === idx) {
-                    setUnlockedIndex(idx + 1);
+                  if (isTaskClickable(idx)) {
                     if (typeof onPuzzleClick === "function") {
                       onPuzzleClick(idx);
                     }
                   }
                 }}
                 style={{
-                  cursor: unlockedIndex === idx ? "pointer" : "default",
+                  cursor: isTaskClickable(idx) ? "pointer" : "default",
                 }}
               >
                 <PuzzlePiece
@@ -114,7 +128,7 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
                   color={piece.color}
                   height={piece.height}
                   className={
-                    unlockedIndex === idx ? "puzzle-piece-hoverable" : ""
+                    isTaskClickable(idx) ? "puzzle-piece-hoverable" : ""
                   }
                 />
               </div>

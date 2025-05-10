@@ -13,6 +13,14 @@ function App() {
   const [selectedTaskIndex, setSelectedTaskIndex] = useState<number | null>(
     null
   );
+  const [completedSubtasks, setCompletedSubtasks] = useState<boolean[][]>([
+    [false, false, false, false],
+    [false, false, false, false],
+    [false, false, false, false],
+    [false, false, false, false],
+  ]);
+  const [currentSubtaskIndex, setCurrentSubtaskIndex] = useState<number>(0);
+  const [unlockedIndex, setUnlockedIndex] = useState(0);
 
   // Ensure only one section can be at max height at a time
   const handleProgressSectionHeight = (percent: number) => {
@@ -29,6 +37,35 @@ function App() {
     setChatbotSectionHeight(percent);
   };
 
+  const handleTaskClick = (taskIndex: number) => {
+    if (selectedTaskIndex === null) {
+      setSelectedTaskIndex(taskIndex);
+      setCurrentSubtaskIndex(0);
+    }
+  };
+
+  const handleSubtaskClick = (subtaskIndex: number) => {
+    if (selectedTaskIndex === null) return;
+
+    // Only allow clicking the current subtask
+    if (subtaskIndex !== currentSubtaskIndex) return;
+
+    // Mark the current subtask as completed
+    const newCompletedSubtasks = [...completedSubtasks];
+    newCompletedSubtasks[selectedTaskIndex][subtaskIndex] = true;
+    setCompletedSubtasks(newCompletedSubtasks);
+
+    // If this was the last subtask, lock the current task and unlock the next
+    if (subtaskIndex === 3) {
+      setSelectedTaskIndex(null);
+      setCurrentSubtaskIndex(0);
+      setUnlockedIndex(selectedTaskIndex + 1); // Increment unlockedIndex to unlock next task
+    } else {
+      // Otherwise, unlock the next subtask
+      setCurrentSubtaskIndex(subtaskIndex + 1);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -36,9 +73,17 @@ function App() {
         <ProgressSection
           heightPercent={progressSectionHeight}
           onHeightChange={handleProgressSectionHeight}
-          onPuzzleClick={setSelectedTaskIndex}
+          onPuzzleClick={handleTaskClick}
+          selectedTaskIndex={selectedTaskIndex}
+          completedSubtasks={completedSubtasks}
+          unlockedIndex={unlockedIndex}
         />
-        <PlaygroundSection selectedTaskIndex={selectedTaskIndex} />
+        <PlaygroundSection
+          selectedTaskIndex={selectedTaskIndex}
+          currentSubtaskIndex={currentSubtaskIndex}
+          onSubtaskClick={handleSubtaskClick}
+          completedSubtasks={completedSubtasks}
+        />
         <DragHandleOverlay
           top={`calc(8vh + ${progressSectionHeight}vh)`}
           onDrag={handleProgressSectionHeight}

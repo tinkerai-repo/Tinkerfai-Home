@@ -28,11 +28,17 @@ const SUBTASK_TYPES: PuzzlePieceType[] = [
 
 interface PlaygroundSectionProps {
   selectedTaskIndex: number | null;
+  currentSubtaskIndex: number;
+  onSubtaskClick: (subtaskIndex: number) => void;
+  completedSubtasks: boolean[][];
   children?: React.ReactNode;
 }
 
 const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
   selectedTaskIndex,
+  currentSubtaskIndex,
+  onSubtaskClick,
+  completedSubtasks,
   children,
 }) => {
   if (selectedTaskIndex === null) {
@@ -45,7 +51,13 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
       </div>
     );
   }
+
   const colors = TASK_COLORS[selectedTaskIndex];
+
+  const isSubtaskClickable = (index: number) => {
+    return index === currentSubtaskIndex;
+  };
+
   return (
     <div className="playground-section" style={{ height: "100%" }}>
       <div
@@ -70,7 +82,7 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              pointerEvents: "auto",
+              pointerEvents: isSubtaskClickable(i) ? "auto" : "none",
               ...(i === 0
                 ? {
                     marginLeft: "22%",
@@ -88,11 +100,13 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
                 ? { marginLeft: "-22%", transform: "translateX(-11.5%)" }
                 : {}),
             }}
+            onClick={() => onSubtaskClick(i)}
           >
             <PuzzlePiece
               type={type}
               color={colors[i]}
               height={i === 0 || i === 3 ? "19.35vh" : "15vh"}
+              className={isSubtaskClickable(i) ? "puzzle-piece-hoverable" : ""}
             />
           </div>
         ))}
