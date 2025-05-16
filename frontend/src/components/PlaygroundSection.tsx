@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./PlaygroundSection.css";
 import PuzzlePiece from "./PuzzlePiece";
 import SubmitButton from "./SubmitButton";
@@ -44,6 +44,7 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
 }) => {
   const [showSubmitButton, setShowSubmitButton] = useState(false);
   const [isSubtaskSelected, setIsSubtaskSelected] = useState(false);
+  const [isOffsetApplied, setIsOffsetApplied] = useState(false);
 
   if (selectedTaskIndex === null) {
     return (
@@ -74,12 +75,14 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
     if (isSubtaskClickable(index)) {
       setIsSubtaskSelected(true);
       setShowSubmitButton(true);
+      setTimeout(() => setIsOffsetApplied(true), 500);
     }
   };
 
   const handleSubmit = () => {
     setShowSubmitButton(false);
     setIsSubtaskSelected(false);
+    setIsOffsetApplied(false);
     onSubtaskClick(currentSubtaskIndex);
   };
 
@@ -119,6 +122,41 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
             if (currentSubtaskIndex === 1 || currentSubtaskIndex === 2) {
               zIndex = i === 1 || i === 2 ? 2 : 1;
             }
+            // Calculate extra offset for the selected subtask only, when shifted
+            let extraTransform = "";
+            if (
+              isOffsetApplied &&
+              isSubtaskSelected &&
+              i === currentSubtaskIndex &&
+              ((shiftDirection === "right" &&
+                (currentSubtaskIndex === 0 || currentSubtaskIndex === 2)) ||
+                (shiftDirection === "left" &&
+                  (currentSubtaskIndex === 1 || currentSubtaskIndex === 3)))
+            ) {
+              if (currentSubtaskIndex === 0) {
+                extraTransform = " translateY(-25%) translateX(-30%)"; // subtask1: up & left
+              } else if (currentSubtaskIndex === 1) {
+                extraTransform = " translateY(-25%) translateX(30%)"; // subtask2: up & right
+              } else if (currentSubtaskIndex === 2) {
+                extraTransform = " translateY(30%) translateX(-30%)"; // subtask3: down & left
+              } else if (currentSubtaskIndex === 3) {
+                extraTransform = " translateY(30%) translateX(30%)"; // subtask4: down & right
+              }
+            }
+            // Compose the base transform for each piece
+            let baseTransform = "";
+            if (i === 0) {
+              baseTransform = "translateY(8.6vh) translateX(10.7%)";
+            } else if (i === 1) {
+              baseTransform = "translateX(-11.5%) translateY(8.6vh)";
+            } else if (i === 2) {
+              baseTransform = "translateX(10.7%)";
+            } else if (i === 3) {
+              baseTransform = "translateX(-11.5%)";
+            }
+            // Add margin for i === 0 and i === 3 as before
+            const marginLeft = i === 0 ? "22%" : i === 3 ? "-22%" : undefined;
+            const marginTop = i === 0 || i === 2 ? "4.3vh" : undefined;
             return (
               <div
                 key={`task${selectedTaskIndex + 1}subtask${i + 1}`}
@@ -131,22 +169,10 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
                   alignItems: "center",
                   justifyContent: "center",
                   pointerEvents: isSubtaskClickable(i) ? "auto" : "none",
-                  ...(i === 0
-                    ? {
-                        marginLeft: "22%",
-                        transform: "translateY(8.6vh) translateX(10.7%)",
-                        marginTop: "4.3vh",
-                      }
-                    : {}),
-                  ...(i === 1
-                    ? { transform: "translateX(-11.5%) translateY(8.6vh)" }
-                    : {}),
-                  ...(i === 2
-                    ? { transform: "translateX(10.7%)", marginTop: "4.3vh" }
-                    : {}),
-                  ...(i === 3
-                    ? { marginLeft: "-22%", transform: "translateX(-11.5%)" }
-                    : {}),
+                  marginLeft,
+                  marginTop,
+                  transform: baseTransform + extraTransform,
+                  transition: `transform 0.5s cubic-bezier(0.4,0,0.2,1)`,
                 }}
                 onClick={() => handleSubtaskClick(i)}
               >
