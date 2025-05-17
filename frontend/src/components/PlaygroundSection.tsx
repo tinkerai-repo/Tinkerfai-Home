@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./PlaygroundSection.css";
 import PuzzlePiece from "./PuzzlePiece";
 import SubmitButton from "./SubmitButton";
@@ -39,7 +39,7 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
   selectedTaskIndex,
   currentSubtaskIndex,
   onSubtaskClick,
-  completedSubtasks,
+
   children,
 }) => {
   const [showSubmitButton, setShowSubmitButton] = useState(false);

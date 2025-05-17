@@ -28,7 +28,6 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
   children,
   onPuzzleClick,
   selectedTaskIndex,
-  completedSubtasks,
   unlockedIndex,
 }) => {
   const isTaskClickable = (index: number) => {
