@@ -14,6 +14,7 @@ function App() {
     null
   );
   const [completedSubtasks, setCompletedSubtasks] = useState<boolean[][]>([
+    [], // First task has no subtasks
     [false, false, false, false],
     [false, false, false, false],
     [false, false, false, false],
@@ -46,6 +47,14 @@ function App() {
 
   const handleSubtaskClick = (subtaskIndex: number) => {
     if (selectedTaskIndex === null) return;
+
+    // Special handling for first task (no subtasks)
+    if (selectedTaskIndex === 0) {
+      setSelectedTaskIndex(null);
+      setCurrentSubtaskIndex(0);
+      setUnlockedIndex(1); // Unlock the next task
+      return;
+    }
 
     // Only allow clicking the current subtask
     if (subtaskIndex !== currentSubtaskIndex) return;

@@ -10,14 +10,16 @@ export type PuzzlePieceType =
   | "subtask-4";
 
 const TASK_COLORS = [
-  // Pink
-  ["#FF4B4B", "#FF8B8B", "#FF8B8B", "#FF4B4B"],
+  // Pink (First task - no subtasks)
+  ["#FF6B6B", "#FF6B6B", "#FF6B6B", "#FF6B6B"],
   // Blue-Green
   ["#11999E", "#6FE7DD", "#6FE7DD", "#11999E"],
   // Yellow
   ["#FFD166", "#FFE299", "#FFE299", "#FFD166"],
   // Purple
   ["#6A4C93", "#A084CA", "#A084CA", "#6A4C93"],
+  // Orange
+  ["#FF9F1C", "#FFB347", "#FFB347", "#FF9F1C"],
 ];
 
 const SUBTASK_TYPES: PuzzlePieceType[] = [
@@ -39,7 +41,6 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
   selectedTaskIndex,
   currentSubtaskIndex,
   onSubtaskClick,
-
   children,
 }) => {
   const [showSubmitButton, setShowSubmitButton] = useState(false);
@@ -52,6 +53,33 @@ const PlaygroundSection: React.FC<PlaygroundSectionProps> = ({
         className="playground-section"
         style={{ paddingTop: `33vh`, height: "100%" }}
       >
+        {children}
+      </div>
+    );
+  }
+
+  // Special handling for first task (no subtasks)
+  if (selectedTaskIndex === 0) {
+    return (
+      <div
+        className="playground-section"
+        style={{ paddingTop: `33vh`, height: "100%" }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <SubmitButton
+            onClick={() => onSubtaskClick(0)}
+            position="left"
+            taskIndex={0}
+            subtaskIndex={0}
+          />
+        </div>
         {children}
       </div>
     );

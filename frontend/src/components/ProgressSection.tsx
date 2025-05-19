@@ -20,7 +20,8 @@ const puzzleData = [
   { type: "task-start", color: "#FF6B6B", height: `${PUZZLE_HEIGHT_VH}vh` },
   { type: "task-middle", color: "#4ECDC4", height: `${PUZZLE_HEIGHT_VH}vh` },
   { type: "task-middle", color: "#FFD166", height: `${PUZZLE_HEIGHT_VH}vh` },
-  { type: "task-end", color: "#6A4C93", height: `${LAST_PIECE_HEIGHT_VH}vh` },
+  { type: "task-middle", color: "#6A4C93", height: `${PUZZLE_HEIGHT_VH}vh` },
+  { type: "task-end", color: "#FF9F1C", height: `${LAST_PIECE_HEIGHT_VH}vh` },
 ];
 
 const ProgressSection: React.FC<ProgressSectionProps> = ({
@@ -97,7 +98,8 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
                   marginBottom: 8,
                   position: "absolute",
                   top: "1.5vh",
-                  marginLeft: idx < 3 ? "-2vw" : undefined,
+                  left: idx < 4 ? "calc(50% - 1vw)" : "50%",
+                  transform: "translateX(-50%)",
                   pointerEvents: "none",
                 }}
                 className={
