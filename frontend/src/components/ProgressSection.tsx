@@ -22,12 +22,15 @@ interface ProgressSectionProps {
 
 const PUZZLE_HEIGHT_VH = (heightPercent: number) =>
   heightPercent === 50 ? 30 : 18;
-const LAST_PIECE_HEIGHT_VH = (heightPercent: number) =>
-  heightPercent === 50
+const LAST_PIECE_HEIGHT_VH = (heightPercent: number, isUnlockedTask: boolean) =>
+  heightPercent === 50 && isUnlockedTask
     ? PUZZLE_HEIGHT_VH(heightPercent)
     : PUZZLE_HEIGHT_VH(heightPercent) / 1.277;
 
-const puzzleData = (heightPercent: number): PuzzlePieceData[] => [
+const puzzleData = (
+  heightPercent: number,
+  unlockedIndex: number
+): PuzzlePieceData[] => [
   {
     type: "task-start",
     color: "#FF6B6B",
@@ -51,7 +54,7 @@ const puzzleData = (heightPercent: number): PuzzlePieceData[] => [
   {
     type: "task-end",
     color: "#FF9F1C",
-    height: `${LAST_PIECE_HEIGHT_VH(heightPercent)}vh`,
+    height: `${LAST_PIECE_HEIGHT_VH(heightPercent, unlockedIndex === 4)}vh`,
   },
 ];
 
@@ -162,20 +165,21 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
         >
           {/* Left separator for unlocked piece (if not first) */}
           {unlockedIndex > 0 &&
-            unlockedIndex < puzzleData(heightPercent).length && (
+            unlockedIndex < puzzleData(heightPercent, unlockedIndex).length && (
               <div
                 className="vertical-dashed-separator"
                 style={{
                   position: "absolute",
                   left: `calc(${
-                    (100 / puzzleData(heightPercent).length) * unlockedIndex
+                    (100 / puzzleData(heightPercent, unlockedIndex).length) *
+                    unlockedIndex
                   }% - 1px)`,
                   top: 0,
                   height: "100%",
                 }}
               />
             )}
-          {puzzleData(heightPercent).map((piece, idx) => (
+          {puzzleData(heightPercent, unlockedIndex).map((piece, idx) => (
             <div
               key={idx}
               style={{
@@ -224,13 +228,15 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
             </div>
           ))}
           {/* Right separator for unlocked piece (if not last) */}
-          {unlockedIndex < puzzleData(heightPercent).length - 1 && (
+          {unlockedIndex <
+            puzzleData(heightPercent, unlockedIndex).length - 1 && (
             <div
               className="vertical-dashed-separator"
               style={{
                 position: "absolute",
                 left: `calc(${
-                  (100 / puzzleData(heightPercent).length) * (unlockedIndex + 1)
+                  (100 / puzzleData(heightPercent, unlockedIndex).length) *
+                  (unlockedIndex + 1)
                 }% - 1px)`,
                 top: 0,
                 height: "100%",
