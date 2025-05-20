@@ -1,7 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./ProgressSection.css";
 import PuzzlePiece from "./PuzzlePiece";
+import PuzzleSplittedTask from "./PuzzleSplittedTask";
 import LockIcon from "./LockIcon";
+
+interface PuzzlePieceData {
+  type: string;
+  color: string;
+  height: string;
+}
 
 interface ProgressSectionProps {
   heightPercent: number;
@@ -16,9 +23,11 @@ interface ProgressSectionProps {
 const PUZZLE_HEIGHT_VH = (heightPercent: number) =>
   heightPercent === 50 ? 30 : 18;
 const LAST_PIECE_HEIGHT_VH = (heightPercent: number) =>
-  PUZZLE_HEIGHT_VH(heightPercent) / 1.277;
+  heightPercent === 50
+    ? PUZZLE_HEIGHT_VH(heightPercent)
+    : PUZZLE_HEIGHT_VH(heightPercent) / 1.277;
 
-const puzzleData = (heightPercent: number) => [
+const puzzleData = (heightPercent: number): PuzzlePieceData[] => [
   {
     type: "task-start",
     color: "#FF6B6B",
@@ -53,7 +62,19 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
   selectedTaskIndex,
   unlockedIndex,
 }) => {
+  const [showSplittedTask, setShowSplittedTask] = useState(false);
+
+  useEffect(() => {
+    if (heightPercent === 50) {
+      const timer = setTimeout(() => setShowSplittedTask(true), 250);
+      return () => clearTimeout(timer);
+    } else {
+      setShowSplittedTask(false);
+    }
+  }, [heightPercent]);
+
   const isTaskClickable = (index: number) => {
+    if (heightPercent === 50) return false;
     if (selectedTaskIndex !== null) return false;
     return index === unlockedIndex;
   };
@@ -62,6 +83,57 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
     if (index < unlockedIndex) return true;
     if (index === selectedTaskIndex) return false;
     return index > unlockedIndex;
+  };
+
+  const renderPuzzlePiece = (piece: PuzzlePieceData, idx: number) => {
+    if (heightPercent === 50 && idx === unlockedIndex && showSplittedTask) {
+      return (
+        <div
+          style={{
+            opacity: 0,
+            animation: "fadeIn 0.3s ease-in forwards",
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            top: 0,
+            left: 0,
+          }}
+        >
+          <PuzzleSplittedTask
+            color={piece.color}
+            height={piece.height}
+            className=""
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div
+        style={{
+          opacity:
+            showSplittedTask && heightPercent === 50 && idx === unlockedIndex
+              ? 0
+              : 1,
+          transition: "opacity 0.3s ease-out",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <PuzzlePiece
+          type={piece.type as any}
+          color={piece.color}
+          height={piece.height}
+          className={isTaskClickable(idx) ? "puzzle-piece-hoverable" : ""}
+        />
+      </div>
+    );
   };
 
   return (
@@ -147,14 +219,7 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
                   cursor: isTaskClickable(idx) ? "pointer" : "default",
                 }}
               >
-                <PuzzlePiece
-                  type={piece.type as any}
-                  color={piece.color}
-                  height={piece.height}
-                  className={
-                    isTaskClickable(idx) ? "puzzle-piece-hoverable" : ""
-                  }
-                />
+                {renderPuzzlePiece(piece, idx)}
               </div>
             </div>
           ))}

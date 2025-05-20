@@ -93,3 +93,12 @@
   top: 0;
   z-index: 2;
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
