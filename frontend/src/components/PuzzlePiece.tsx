@@ -51,6 +51,12 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
   className = "",
 }) => {
   const Component = componentMap[type];
+  const currentHeight =
+    typeof height === "string"
+      ? parseInt(height)
+      : height || defaultHeights[type];
+  const isExpanding = currentHeight > 20; // If height is greater than 20vh, we're expanding
+
   return (
     <Component
       fill={color}
@@ -63,6 +69,9 @@ const PuzzlePiece: React.FC<PuzzlePieceProps> = ({
         height: height || defaultHeights[type],
         width: "100%",
         boxSizing: "border-box",
+        transition: `height 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) ${
+          isExpanding ? "0.15s" : "0.02s"
+        }`,
       }}
     />
   );

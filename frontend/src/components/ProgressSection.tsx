@@ -13,15 +13,37 @@ interface ProgressSectionProps {
   children?: React.ReactNode;
 }
 
-const PUZZLE_HEIGHT_VH = 18;
-const LAST_PIECE_HEIGHT_VH = 18 / 1.277; // ≈ 11.75
+const PUZZLE_HEIGHT_VH = (heightPercent: number) =>
+  heightPercent === 50 ? 30 : 18;
+const LAST_PIECE_HEIGHT_VH = (heightPercent: number) =>
+  PUZZLE_HEIGHT_VH(heightPercent) / 1.277;
 
-const puzzleData = [
-  { type: "task-start", color: "#FF6B6B", height: `${PUZZLE_HEIGHT_VH}vh` },
-  { type: "task-middle", color: "#4ECDC4", height: `${PUZZLE_HEIGHT_VH}vh` },
-  { type: "task-middle", color: "#FFD166", height: `${PUZZLE_HEIGHT_VH}vh` },
-  { type: "task-middle", color: "#6A4C93", height: `${PUZZLE_HEIGHT_VH}vh` },
-  { type: "task-end", color: "#FF9F1C", height: `${LAST_PIECE_HEIGHT_VH}vh` },
+const puzzleData = (heightPercent: number) => [
+  {
+    type: "task-start",
+    color: "#FF6B6B",
+    height: `${PUZZLE_HEIGHT_VH(heightPercent)}vh`,
+  },
+  {
+    type: "task-middle",
+    color: "#4ECDC4",
+    height: `${PUZZLE_HEIGHT_VH(heightPercent)}vh`,
+  },
+  {
+    type: "task-middle",
+    color: "#FFD166",
+    height: `${PUZZLE_HEIGHT_VH(heightPercent)}vh`,
+  },
+  {
+    type: "task-middle",
+    color: "#6A4C93",
+    height: `${PUZZLE_HEIGHT_VH(heightPercent)}vh`,
+  },
+  {
+    type: "task-end",
+    color: "#FF9F1C",
+    height: `${LAST_PIECE_HEIGHT_VH(heightPercent)}vh`,
+  },
 ];
 
 const ProgressSection: React.FC<ProgressSectionProps> = ({
@@ -54,10 +76,10 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
           width: "100%",
         }}
       >
-        <div style={{ width: "15%" }} />
+        <div style={{ width: heightPercent === 50 ? "5%" : "15%" }} />
         <div
           style={{
-            width: "70%",
+            width: heightPercent === 50 ? "90%" : "70%",
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-evenly",
@@ -67,20 +89,21 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
           }}
         >
           {/* Left separator for unlocked piece (if not first) */}
-          {unlockedIndex > 0 && unlockedIndex < puzzleData.length && (
-            <div
-              className="vertical-dashed-separator"
-              style={{
-                position: "absolute",
-                left: `calc(${
-                  (100 / puzzleData.length) * unlockedIndex
-                }% - 1px)`,
-                top: 0,
-                height: "100%",
-              }}
-            />
-          )}
-          {puzzleData.map((piece, idx) => (
+          {unlockedIndex > 0 &&
+            unlockedIndex < puzzleData(heightPercent).length && (
+              <div
+                className="vertical-dashed-separator"
+                style={{
+                  position: "absolute",
+                  left: `calc(${
+                    (100 / puzzleData(heightPercent).length) * unlockedIndex
+                  }% - 1px)`,
+                  top: 0,
+                  height: "100%",
+                }}
+              />
+            )}
+          {puzzleData(heightPercent).map((piece, idx) => (
             <div
               key={idx}
               style={{
@@ -136,13 +159,13 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
             </div>
           ))}
           {/* Right separator for unlocked piece (if not last) */}
-          {unlockedIndex < puzzleData.length - 1 && (
+          {unlockedIndex < puzzleData(heightPercent).length - 1 && (
             <div
               className="vertical-dashed-separator"
               style={{
                 position: "absolute",
                 left: `calc(${
-                  (100 / puzzleData.length) * (unlockedIndex + 1)
+                  (100 / puzzleData(heightPercent).length) * (unlockedIndex + 1)
                 }% - 1px)`,
                 top: 0,
                 height: "100%",
@@ -150,7 +173,7 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
             />
           )}
         </div>
-        <div style={{ width: "15%" }} />
+        <div style={{ width: heightPercent === 50 ? "5%" : "15%" }} />
       </div>
       {children}
     </div>
