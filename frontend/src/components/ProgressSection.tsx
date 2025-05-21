@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import type { CSSProperties } from "react";
 import "./ProgressSection.css";
 import PuzzlePiece from "./PuzzlePiece";
 import PuzzleSplittedTask from "./PuzzleSplittedTask";
@@ -64,8 +65,21 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
   onPuzzleClick,
   selectedTaskIndex,
   unlockedIndex,
+  completedSubtasks,
 }) => {
   const [showSplittedTask, setShowSplittedTask] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (heightPercent === 50) {
@@ -75,6 +89,150 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
       setShowSplittedTask(false);
     }
   }, [heightPercent]);
+
+  const isTask2Completed = completedSubtasks[1]?.every(
+    (subtask) => subtask === true
+  );
+  const isTask3Completed = completedSubtasks[2]?.every(
+    (subtask) => subtask === true
+  );
+  const isTask4Completed = completedSubtasks[3]?.every(
+    (subtask) => subtask === true
+  );
+  const isTask5Completed = completedSubtasks[4]?.every(
+    (subtask) => subtask === true
+  );
+
+  const getTaskStyle = (idx: number): CSSProperties => {
+    const baseStyle: CSSProperties = {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      height: "100%",
+      position: "relative",
+      flex: 1,
+      transition: "transform 0.5s cubic-bezier(0.4,0,0.2,1)",
+    };
+
+    // Calculate movement based on both window dimensions
+    const puzzleHeightPx =
+      (PUZZLE_HEIGHT_VH(heightPercent) * windowSize.height) / 100;
+    const containerWidthPx = windowSize.width * 0.7;
+    const movementRatio = containerWidthPx / puzzleHeightPx;
+
+    // Use different multipliers based on task and section state
+    const getMovementMultiplier = (isLastTask: boolean) => {
+      if (heightPercent === 50) {
+        return isLastTask ? 0.725 : 0.685;
+      }
+      return 0.445;
+    };
+
+    const movementVw = movementRatio * getMovementMultiplier(idx === 4);
+
+    // Handle task 5 completion first
+    if (isTask5Completed) {
+      if (idx === 0) {
+        // Task 1 moves furthest right
+        return {
+          ...baseStyle,
+          transform: `translateX(${movementVw * 4}vw)`,
+        };
+      } else if (idx === 1) {
+        // Task 2 moves further right
+        return {
+          ...baseStyle,
+          transform: `translateX(${movementVw * 2}vw)`,
+        };
+      } else if (idx === 2) {
+        // Task 3 moves right
+        return {
+          ...baseStyle,
+          transform: `translateX(${movementVw * 0}vw)`,
+        };
+      } else if (idx === 3) {
+        // Task 4 moves left
+        return {
+          ...baseStyle,
+          transform: `translateX(-${movementVw * 2}vw)`,
+        };
+      }
+      if (idx === 4) {
+        // Only task 5 moves left
+        return {
+          ...baseStyle,
+          transform: `translateX(-${movementVw * 4.25}vw)`,
+        };
+      }
+    }
+    // Handle task 4 completion
+    else if (isTask4Completed) {
+      if (idx === 0) {
+        // Task 1 moves furthest right
+        return {
+          ...baseStyle,
+          transform: `translateX(${movementVw * 5}vw)`,
+        };
+      } else if (idx === 1) {
+        // Task 2 moves further right
+        return {
+          ...baseStyle,
+          transform: `translateX(${movementVw * 3}vw)`,
+        };
+      } else if (idx === 2) {
+        // Task 3 moves right
+        return {
+          ...baseStyle,
+          transform: `translateX(${movementVw * 1}vw)`,
+        };
+      } else if (idx === 3) {
+        // Task 4 moves left
+        return {
+          ...baseStyle,
+          transform: `translateX(-${movementVw}vw)`,
+        };
+      }
+    }
+    // Handle task 3 completion
+    else if (isTask3Completed) {
+      if (idx === 0) {
+        // Task 1 moves further right
+        return {
+          ...baseStyle,
+          transform: `translateX(${movementVw * 3}vw)`,
+        };
+      } else if (idx === 1) {
+        // Task 2 moves right
+        return {
+          ...baseStyle,
+          transform: `translateX(${movementVw}vw)`,
+        };
+      } else if (idx === 2) {
+        // Task 3 moves left
+        return {
+          ...baseStyle,
+          transform: `translateX(-${movementVw}vw)`,
+        };
+      }
+    }
+    // Handle task 2 completion
+    else if (isTask2Completed) {
+      if (idx === 0) {
+        return {
+          ...baseStyle,
+          transform: `translateX(${movementVw}vw)`,
+        };
+      } else if (idx === 1) {
+        return {
+          ...baseStyle,
+          transform: `translateX(-${movementVw}vw)`,
+        };
+      }
+    }
+
+    return baseStyle;
+  };
 
   const isTaskClickable = (index: number) => {
     if (heightPercent === 50) return false;
@@ -180,18 +338,7 @@ const ProgressSection: React.FC<ProgressSectionProps> = ({
               />
             )}
           {puzzleData(heightPercent, unlockedIndex).map((piece, idx) => (
-            <div
-              key={idx}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
-                position: "relative",
-                flex: 1,
-              }}
-            >
+            <div key={idx} style={getTaskStyle(idx)}>
               <div
                 style={{
                   marginBottom: 8,
