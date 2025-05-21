@@ -41,7 +41,6 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   border: none;
   cursor: pointer;
-  margin-right: 2vw;
   transition: box-shadow 0.2s;
 }
 
@@ -49,4 +48,34 @@
 .header-profile-icon:focus {
   box-shadow: 0 0 0 2px #8882;
   outline: none;
+}
+
+.header-coin-counter {
+  display: flex;
+  align-items: center;
+  background: #aaa;
+  border-radius: 999px;
+  padding: 0.1vh 1.2vh 0.1vh 1.2vh;
+  margin-right: 1.2vw;
+  height: 6vh;
+  min-width: 8vh;
+  box-sizing: border-box;
+}
+
+.header-coin-icon {
+  width: 3vh;
+  height: 3vh;
+  margin-right: 1.2vh;
+  background: none;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.header-coin-number {
+  font-size: 2.5vh;
+  font-family: 'Roboto Mono', monospace;
+  color: #fff;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  line-height: 1;
 } 
